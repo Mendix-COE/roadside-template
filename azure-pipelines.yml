@@ -1,0 +1,25 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  NAME: 'Roadside'
+  RUNTIME_URL: ''
+  APP_ID: ''
+
+steps:
+- bash: |
+    "${RUNTIME_URL}" > ${Build.SorcesDirectory}/android/app/src/main/res/raw/runtime_url
+    sed "s/nativeTemplate/${NAME}/" ${Build.SourcesDirectory}/android/app/src/main/res/values/strings.xml
+    sed "s/applicationId \"com.mendix.nativetemplate\"/applicationId \"${APP_ID}\"/" ${Build.SourcesDirectory}/android/app/build.gradle
+    git commit -m ''
+    git push origin ${Build.SourceBranchName}
+  displayName: Update Template
+
+
